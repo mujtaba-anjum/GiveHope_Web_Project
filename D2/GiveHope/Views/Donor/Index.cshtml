@@ -1,0 +1,97 @@
+@model DonorDashboardViewModel
+@{
+    ViewData["Title"] = "Donor Home";
+}
+
+<div class="page-title">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <h3 class="mb-0">Donor Home</h3>
+        <span class="badge badge-soft fs-6">Total given: Rs. @Model.TotalGiven.ToString("N0")</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="box mb-4">
+        <h5>Campaigns</h5>
+        @if (!Model.Campaigns.Any())
+        {
+            <p class="text-muted mb-0">No active campaigns right now.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>NGO</th>
+                            <th>Target</th>
+                            <th>Raised</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var campaign in Model.Campaigns)
+                        {
+                            <tr>
+                                <td>@campaign.Title</td>
+                                <td>@campaign.NgoName</td>
+                                <td>Rs. @campaign.Target.ToString("N0")</td>
+                                <td>
+                                    Rs. @campaign.Raised.ToString("N0")
+                                    <div class="progress mt-1" style="height: 6px;">
+                                        <div class="progress-bar" style="width: @campaign.Percent%"></div>
+                                    </div>
+                                </td>
+                                <td class="text-end">
+                                    @if (campaign.Remaining > 0)
+                                    {
+                                        <a asp-action="Donate" asp-route-id="@campaign.Id" class="btn btn-soft btn-sm">Donate</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-soft">Fully funded</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="box">
+        <h5>My Donations</h5>
+        @if (!Model.MyDonations.Any())
+        {
+            <p class="text-muted mb-0">You have not donated yet. Pick a campaign above to get started.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var donation in Model.MyDonations)
+                        {
+                            <tr>
+                                <td>@donation.CampaignTitle</td>
+                                <td>Rs. @donation.Amount.ToString("N0")</td>
+                                <td>@donation.DonatedAt.ToLocalTime().ToString("dd MMM yyyy")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+</div>

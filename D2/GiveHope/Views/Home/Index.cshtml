@@ -1,0 +1,59 @@
+﻿@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "Home";
+    var isDonor = User.IsInRole("Donor");
+    var isLoggedIn = User.Identity?.IsAuthenticated == true;
+}
+
+<div class="hero">
+    <div class="container">
+        <h1>Small help can make a big change</h1>
+        <p class="my-3">GiveHope connects donors with trusted NGOs. Choose a cause and donate.</p>
+        @if (isDonor)
+        {
+            <a asp-controller="Donor" asp-action="Index" class="btn btn-soft btn-lg">Go to my dashboard</a>
+        }
+        else if (!isLoggedIn)
+        {
+            <a asp-controller="Account" asp-action="Register" class="btn btn-soft btn-lg">Start Donating</a>
+        }
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h3 class="mb-4 text-center">Campaigns</h3>
+
+    @if (!Model.Campaigns.Any())
+    {
+        <p class="text-center text-muted">No campaigns yet.</p>
+    }
+
+    <div class="row g-4">
+        @foreach (var campaign in Model.Campaigns)
+        {
+            <div class="col-md-6">
+                <div class="box h-100 d-flex flex-column">
+                    <h5>@campaign.Title</h5>
+                    <p class="small mb-1">by @campaign.NgoName</p>
+                    <p class="small text-muted">@campaign.Description</p>
+
+                    <div class="progress mb-2">
+                        <div class="progress-bar" role="progressbar" style="width: @campaign.Percent%" aria-valuenow="@campaign.Percent" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <p class="small">Rs. @campaign.Raised.ToString("N0") raised of Rs. @campaign.Target.ToString("N0")</p>
+
+                    <div class="mt-auto">
+                        @if (isDonor)
+                        {
+                            <a asp-controller="Donor" asp-action="Donate" asp-route-id="@campaign.Id" class="btn btn-soft btn-sm">Donate</a>
+                        }
+                        else if (!isLoggedIn)
+                        {
+                            <a asp-controller="Account" asp-action="Login" class="btn btn-soft btn-sm">Donate</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

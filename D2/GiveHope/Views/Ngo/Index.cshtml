@@ -1,0 +1,76 @@
+@model NgoDashboardViewModel
+@{
+    ViewData["Title"] = "NGO Home";
+}
+
+<div class="page-title">
+    <div class="container">
+        <h3 class="mb-0">NGO Home</h3>
+    </div>
+</div>
+
+<div class="container">
+
+    <div class="box mb-4">
+        <h5>My Campaigns</h5>
+        @if (!Model.Campaigns.Any())
+        {
+            <p class="text-muted mb-0">You have not created a campaign yet.</p>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table align-middle">
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Target</th>
+                            <th>Raised</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var campaign in Model.Campaigns)
+                        {
+                            <tr>
+                                <td>@campaign.Title</td>
+                                <td>Rs. @campaign.Target.ToString("N0")</td>
+                                <td>Rs. @campaign.Raised.ToString("N0")</td>
+                                <td>@campaign.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="box">
+        <h5 class="mb-3">Create Campaign</h5>
+
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="NewCampaign.Title" class="form-label"></label>
+                <input asp-for="NewCampaign.Title" class="form-control" placeholder="Campaign title" />
+                <span asp-validation-for="NewCampaign.Title" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NewCampaign.TargetAmount" class="form-label"></label>
+                <input asp-for="NewCampaign.TargetAmount" type="number" min="1" class="form-control" placeholder="e.g. 50000" />
+                <span asp-validation-for="NewCampaign.TargetAmount" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="NewCampaign.Description" class="form-label"></label>
+                <textarea asp-for="NewCampaign.Description" class="form-control" rows="3" placeholder="Write a short description"></textarea>
+                <span asp-validation-for="NewCampaign.Description" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-soft">Create campaign</button>
+        </form>
+    </div>
+
+</div>

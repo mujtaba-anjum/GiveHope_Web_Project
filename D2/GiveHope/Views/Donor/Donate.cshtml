@@ -1,0 +1,45 @@
+@model DonateViewModel
+@{
+    ViewData["Title"] = "Donate";
+}
+
+<div class="box form-box">
+    <h3 class="text-center mb-2">Donate</h3>
+    <p class="text-center small text-muted mb-4">@Model.CampaignTitle</p>
+
+    <div class="d-flex justify-content-between small mb-1">
+        <span>NGO</span><span>@Model.NgoName</span>
+    </div>
+    <div class="d-flex justify-content-between small mb-1">
+        <span>Target</span><span>Rs. @Model.Target.ToString("N0")</span>
+    </div>
+    <div class="d-flex justify-content-between small mb-3">
+        <span>Still needed</span><span>Rs. @Model.Remaining.ToString("N0")</span>
+    </div>
+
+    <div class="progress mb-4">
+        <div class="progress-bar" style="width: @(Model.Target <= 0 ? 0 : (int)Math.Min(100, Math.Round(Model.Raised / Model.Target * 100, MidpointRounding.AwayFromZero)))%"></div>
+    </div>
+
+    @if (Model.Remaining <= 0)
+    {
+        <div class="alert alert-info">This campaign is already fully funded. Thank you!</div>
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">Back to dashboard</a>
+    }
+    else
+    {
+        <form asp-action="Donate" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+            <input type="hidden" asp-for="CampaignId" />
+
+            <div class="mb-4">
+                <label asp-for="Amount" class="form-label"></label>
+                <input asp-for="Amount" type="number" min="1" step="1" class="form-control" placeholder="e.g. 2000" />
+                <span asp-validation-for="Amount" class="text-danger small"></span>
+            </div>
+
+            <button type="submit" class="btn btn-soft w-100 mb-2">Confirm donation</button>
+            <a asp-action="Index" class="btn btn-outline-secondary w-100">Cancel</a>
+        </form>
+    }
+</div>
